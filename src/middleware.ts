@@ -6,7 +6,6 @@ import type { NextRequest } from "next/server";
 export async function middleware(req: NextRequest) {
     const secret = process.env.JWT_SECRET;
     const token = await getToken({ req, secret });
-
     const { pathname } = req.nextUrl;
 
     if (token) {
@@ -16,7 +15,7 @@ export async function middleware(req: NextRequest) {
     }
 
     else {
-        if (pathname.startsWith("/dashboard")) {
+        if (pathname === "/" || pathname.startsWith("/dashboard")) {
             return NextResponse.redirect(new URL("/login", req.url));
         }
     }
@@ -25,6 +24,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    // Matcher ensure karta hai ki middleware in paths par chale
     matcher: ["/", "/login", "/signup", "/dashboard/:path*"],
 };
