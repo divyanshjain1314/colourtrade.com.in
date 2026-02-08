@@ -5,31 +5,26 @@ import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
     const secret = process.env.JWT_SECRET;
+    const token = await getToken({ req, secret });
 
-    const token = await getToken({
-        req,
-        secret,
-    });
-
-    console.log("---------------------------------------");
-    console.log("PATHNAME:", req.nextUrl.pathname);
-    console.log("TOKEN FOUND:", !!token);
+    const { pathname } = req.nextUrl;
 
     if (token) {
-        if (req.nextUrl.pathname === "/" ||
-            req.nextUrl.pathname === "/login" ||
-            req.nextUrl.pathname === "/signup") {
+        if (pathname === "/" || pathname === "/login" || pathname === "/signup") {
             return NextResponse.redirect(new URL("/dashboard", req.url));
         }
     }
 
-    if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {
-        return NextResponse.redirect(new URL("/login", req.url));
+    else {
+        if (pathname.startsWith("/dashboard")) {
+            return NextResponse.redirect(new URL("/login", req.url));
+        }
     }
 
     return NextResponse.next();
 }
 
 export const config = {
+    // Matcher ensure karta hai ki middleware in paths par chale
     matcher: ["/", "/login", "/signup", "/dashboard/:path*"],
 };
