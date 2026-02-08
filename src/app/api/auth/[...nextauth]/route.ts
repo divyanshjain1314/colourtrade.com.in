@@ -15,14 +15,29 @@ const handler = NextAuth({
             },
             async authorize(credentials) {
                 await connectToDatabase();
-                const user = await User.findOne({ email: credentials?.phone });
+
+                const loginIdentifier = credentials?.email || credentials?.phone;
+
+                if (!loginIdentifier) throw new Error("Email or Phone is required");
+
+                const user = await User.findOne({
+                    $or: [
+                        { email: loginIdentifier },
+                        { phone: loginIdentifier }
+                    ]
+                });
 
                 if (!user) throw new Error("No user found");
 
                 const isValid = await bcrypt.compare(credentials!.password, user.password);
                 if (!isValid) throw new Error("Incorrect password");
 
-                return { id: user._id, name: user.name, email: user.email, wallet: user.wallet };
+                return {
+                    id: user._id.toString(),
+                    name: user.name,
+                    email: user.email,
+                    wallet: user.wallet
+                };
             }
         })
     ],
