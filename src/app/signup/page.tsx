@@ -48,12 +48,11 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#050A10] flex items-center justify-center p-6 relative overflow-hidden">
-            {/* Background Glows for Neon Vibe */}
+        <div className="min-h-screen bg-[#050A10] flex items-center justify-center p-3 md:p-6 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-125 h-125 bg-red-500/10 blur-[150px] rounded-full -translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute bottom-0 right-0 w-125 h-125 bg-cyan-500/10 blur-[150px] rounded-full translate-x-1/2 translate-y-1/2"></div>
 
-            <div className="w-full max-w-md bg-[#0D1520]/80 border border-white/10 rounded-[40px] p-10 backdrop-blur-3xl shadow-2xl relative z-10">
+            <div className="w-full max-w-md bg-[#0D1520]/80 border border-white/10 rounded-[40px] px-5 py-10 md:p-10 backdrop-blur-3xl shadow-2xl relative z-10">
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-[1000] italic tracking-tighter uppercase text-white">
                         Create <span className="text-red-500">Account</span>
