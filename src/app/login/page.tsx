@@ -8,7 +8,7 @@ import { signIn } from 'next-auth/react';
 
 export default function LoginPage() {
     const [loading, setLoading] = useState(false);
-    const [email, setEmail] = useState('');
+    const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
 
@@ -16,17 +16,18 @@ export default function LoginPage() {
         e.preventDefault();
         setLoading(true);
 
-        const res = await signIn('credentials', {
-            email,
-            password,
-            redirect: false,
-        });
+        const isEmail = identifier.includes('@');
+        const loginData = isEmail
+            ? { email: identifier, password, redirect: false }
+            : { phone: identifier, password, redirect: false };
+
+        const res = await signIn('credentials', loginData);
 
         if (res?.error) {
-            alert(res.error);
+            alert("Invalid login credentials");
             setLoading(false);
         } else {
-            router.push('/dashboard')
+            router.push('/dashboard');
             router.refresh();
         }
     };
@@ -47,12 +48,16 @@ export default function LoginPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">Email Address</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">
+                            Email or Phone Number
+                        </label>
                         <div className="relative">
                             <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
                             <input
-                                type="email"
-                                placeholder="name@example.com"
+                                type="text" // 'email' ki jagah 'text' use karein taaki numbers allow hon
+                                placeholder="Email or +91..."
+                                value={identifier}
+                                onChange={(e) => setIdentifier(e.target.value)}
                                 className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-white outline-none focus:border-cyan-500 transition-all font-medium"
                                 required
                             />
@@ -68,6 +73,7 @@ export default function LoginPage() {
                                 placeholder="••••••••"
                                 className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-white outline-none focus:border-cyan-500 transition-all font-medium"
                                 required
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
                     </div>

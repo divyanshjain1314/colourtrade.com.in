@@ -22,9 +22,9 @@ const Header: React.FC<HeaderProps> = ({ balance = 0, onAddMoney }) => {
     }, []);
 
     return (
-        <div className="relative flex items-center justify-center w-full px-4 md:px-8 py-10 z-100">
+        <div className="relative flex items-center md:justify-center w-full px-4 md:px-8 py-10 z-100">
 
-            <h1 className="text-2xl md:text-5xl font-[1000] italic tracking-tighter leading-none select-none uppercase">
+            <h1 className="text-lg md:text-5xl font-[1000] italic tracking-tighter leading-none select-none uppercase">
                 <span className="text-[#FF3B3B] drop-shadow-[0_0_12px_rgba(255,59,59,0.6)]">PLAY</span>
                 <span className="text-white mx-2 md:mx-3">&</span>
                 <span className="text-[#00E676] drop-shadow-[0_0_12px_rgba(0,230,118,0.6)]">WIN DAILY</span>

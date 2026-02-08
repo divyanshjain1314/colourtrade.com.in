@@ -9,12 +9,13 @@ const handler = NextAuth({
         CredentialsProvider({
             name: "Credentials",
             credentials: {
+                phone: { label: 'Phone', type: 'number' },
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
                 await connectToDatabase();
-                const user = await User.findOne({ email: credentials?.email });
+                const user = await User.findOne({ email: credentials?.phone });
 
                 if (!user) throw new Error("No user found");
 
