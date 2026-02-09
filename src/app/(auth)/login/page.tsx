@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Mail, Lock, Loader2, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { showToast } from '@/lib/toast';
 
 export default function LoginPage() {
     const [loading, setLoading] = useState(false);
@@ -15,20 +16,28 @@ export default function LoginPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        try {
+            const isEmail = identifier.includes('@');
+            const loginData = isEmail
+                ? { email: identifier, password, redirect: false }
+                : { phone: identifier, password, redirect: false };
 
-        const isEmail = identifier.includes('@');
-        const loginData = isEmail
-            ? { email: identifier, password, redirect: false }
-            : { phone: identifier, password, redirect: false };
+            const res = await signIn('credentials', loginData);
 
-        const res = await signIn('credentials', loginData);
-
-        if (res?.error) {
-            alert("Invalid login credentials");
+            if (res?.status === 200) {
+                router.push('/dashboard');
+                router.refresh();
+            } else {
+                showToast.error("Invalid login credentials");
+                setLoading(false);
+            }
+        } catch (error) {
+            showToast.error('Connection Error');
+        } finally {
+            setTimeout(() => {
+                showToast.dismiss();
+            }, 1000);
             setLoading(false);
-        } else {
-            router.push('/dashboard');
-            router.refresh();
         }
     };
 
@@ -54,12 +63,13 @@ export default function LoginPage() {
                         <div className="relative">
                             <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
                             <input
-                                type="text" // 'email' ki jagah 'text' use karein taaki numbers allow hon
+                                type="text"
                                 placeholder="Email or +91..."
                                 value={identifier}
                                 onChange={(e) => setIdentifier(e.target.value)}
                                 className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-white outline-none focus:border-cyan-500 transition-all font-medium"
                                 required
+                                autoComplete='one-time-code'
                             />
                         </div>
                     </div>
@@ -74,12 +84,18 @@ export default function LoginPage() {
                                 className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-white outline-none focus:border-cyan-500 transition-all font-medium"
                                 required
                                 onChange={(e) => setPassword(e.target.value)}
+                                autoComplete='one-time-code'
                             />
                         </div>
                     </div>
 
                     <div className="flex justify-end">
-                        <button type="button" className="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase tracking-widest">Forgot Password?</button>
+                        <Link
+                            href="/forgot-password"
+                            className="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase tracking-widest"
+                        >
+                            Forgot Password?
+                        </Link>
                     </div>
 
                     <button

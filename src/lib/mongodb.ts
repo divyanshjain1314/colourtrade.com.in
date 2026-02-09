@@ -1,9 +1,14 @@
 import mongoose from 'mongoose';
+import { setServers } from 'node:dns/promises';
+
+if (process.env.NODE_ENV === 'development') {
+  setServers(['8.8.8.8', '1.1.1.1']);
+}
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable in .env.local');
+  throw new Error('Please define the MONGODB_URI environment variable');
 }
 
 let cached = (global as any).mongoose;
@@ -20,11 +25,17 @@ async function connectToDatabase() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      maxPoolSize: 10,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
+    console.log("=> Attempting to connect to MongoDB...");
+
+    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongooseInstance) => {
       console.log("=> MongoDB Connected Successfully");
-      return mongoose;
+      return mongooseInstance;
+    }).catch((error) => {
+      console.error("=> MongoDB Connection Error:", error);
+      throw error;
     });
   }
 

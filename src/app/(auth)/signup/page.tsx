@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { User, Mail, Lock, Loader2, ShieldCheck, Phone } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { showToast } from '@/lib/toast';
 
 export default function SignupPage() {
     const [loading, setLoading] = useState(false);
@@ -35,14 +36,17 @@ export default function SignupPage() {
             const data = await res.json();
 
             if (res.ok) {
-                alert("Account created successfully! Redirecting to login...");
+                showToast.success("Account created successfully! Redirecting to login...");
                 router.push('/login');
             } else {
-                alert(data.message || "Registration failed. Please try again.");
+                showToast.error(data.message || "Registration failed. Please try again.");
             }
         } catch (error) {
-            alert("Connection error. Check your internet and try again.");
+            showToast.error('Connection Error');
         } finally {
+            setTimeout(() => {
+                showToast.dismiss();
+            }, 1000);
             setLoading(false);
         }
     };
@@ -98,9 +102,9 @@ export default function SignupPage() {
                         </div>
                     </div>
 
-                    {/* Email Field (Optional) */}
+                    {/* Email Field */}
                     <div className="space-y-1">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">Email (Optional)</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">Email</label>
                         <div className="relative">
                             <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
                             <input
@@ -110,8 +114,8 @@ export default function SignupPage() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-white outline-none focus:border-red-500 transition-all font-medium opacity-80"
+                                required
                                 autoComplete='one-time-code'
-
                             />
                         </div>
                     </div>

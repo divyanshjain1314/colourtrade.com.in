@@ -1,23 +1,12 @@
-"use client";
+'use client'
 
 import Header from "@/components/common/Header";
-import DepositModal from "@/components/payment/DepositModal";
-import { useState } from "react";
 
 export default function DashboardPage() {
-    const [isDepositOpen, setIsDepositOpen] = useState<boolean>(false);
-    const [balance, setBalance] = useState<number>(0);
 
-    const handlePaymentSuccess = (amount: number) => {
-
-        // setBalance(prev => prev + amount);
-    };
     return (
         <div className="bg-[#0009] text-white">
-            <Header
-                balance={balance}
-                onAddMoney={() => setIsDepositOpen(true)}
-            />
+            <Header />
             <div className="min-h-screen flex items-center justify-center p-4 md:p-10 relative overflow-hidden">
                 {/* Main Wrapper with Perspective Effect */}
                 <div className="w-full max-w-5xl relative z-10 transform perspective-1000">
@@ -121,12 +110,6 @@ export default function DashboardPage() {
                     </div>
                 </div>
             </div>
-
-            <DepositModal
-                isOpen={isDepositOpen}
-                onClose={() => setIsDepositOpen(false)}
-                onSuccess={handlePaymentSuccess}
-            />
         </div>
     );
 }

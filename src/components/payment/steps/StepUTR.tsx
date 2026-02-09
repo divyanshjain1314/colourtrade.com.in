@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { showToast } from '@/lib/toast';
 
 const StepUTR = ({ utr, setUtr, onSubmit }: any) => {
     const [loading, setLoading] = useState(false);
 
     const handleInternalSubmit = async () => {
-        if (utr.length !== 12) return alert("Enter 12-digit UTR");
-        setLoading(true);
+        if (utr.length !== 12) {
+            showToast.error("Enter 12-digit UTR");
+            setTimeout(() => showToast.dismiss(), 1000);
+            return;
+        } setLoading(true);
         await onSubmit();
         setLoading(false);
     };

@@ -1,12 +1,19 @@
 import mongoose from 'mongoose';
 
+// models/User.ts
 const UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    phone: { type: String, required: true, unique: true }, 
-    email: { type: String, required: false, sparse: true }, 
+    phone: { type: String, required: true, unique: true },
+    email: { type: String, required: false, sparse: true },
     password: { type: String, required: true },
     wallet: { type: Number, default: 0 },
     role: { type: String, default: 'user' },
-}, { timestamps: true });
+    image: { type: String },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date }
+}, {
+    timestamps: true,
+    strict: false
+});
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);
