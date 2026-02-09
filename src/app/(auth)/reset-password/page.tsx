@@ -93,6 +93,7 @@ function ResetPasswordForm() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-14 text-white outline-none focus:border-cyan-500 transition-all font-medium"
+                            autoComplete='one-time-code'
                             required
                         />
                     </div>
@@ -108,6 +109,7 @@ function ResetPasswordForm() {
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-14 text-white outline-none focus:border-cyan-500 transition-all font-medium"
+                            autoComplete='one-time-code'
                             required
                         />
                         <button

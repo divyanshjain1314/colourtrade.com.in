@@ -5,6 +5,7 @@ import StepAmount from './steps/StepAmount';
 import StepPayment from './steps/StepPayment';
 import StepUTR from './steps/StepUTR';
 import StepSuccess from './steps/StepSuccess';
+import { showToast } from '@/lib/toast';
 
 interface DepositProps {
     isOpen: boolean;
@@ -52,15 +53,34 @@ const DepositModal = ({ isOpen, onClose, onSuccess }: DepositProps) => {
                         utr={utr}
                         setUtr={setUtr}
                         onSubmit={async () => {
-                            // Backend Integration Point: 
-                            // axios.post('/api/deposit', { amount, utr })
-                            setStep('success');
-                            setTimeout(() => {
-                                onSuccess(amount);
-                                onClose();
-                                setStep('amount');
-                                setUtr('');
-                            }, 4000);
+                            try {
+                                const res = await fetch('/api/deposit', {
+                                    method: 'POST',
+                                    body: JSON.stringify({ amount, utr }),
+                                    headers: { 'Content-Type': 'application/json' }
+                                });
+
+                                const data = await res.json();
+
+                                if (res.ok) {
+                                    showToast.success("Request Submitted! Admin will verify.");
+                                    setStep('success');
+                                    setTimeout(() => {
+                                        onSuccess(amount);
+                                        onClose();
+                                        setStep('amount');
+                                        setUtr('');
+                                    }, 4000);
+                                } else {
+                                    showToast.error(data.error);
+                                }
+                            } catch (error) {
+                                showToast.error("Network error");
+                            } finally {
+                                setTimeout(() => {
+                                    showToast.dismiss()
+                                }, 4000);
+                            }
                         }}
                     />
                 )}

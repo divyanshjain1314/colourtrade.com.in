@@ -9,13 +9,27 @@ export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
     if (token) {
-        if (pathname === "/" || pathname === "/login" || pathname === "/signup") {
-            return NextResponse.redirect(new URL("/dashboard", req.url));
+        const userRole = token.role;
+
+        if (userRole === 'admin') {
+            if (pathname === "/" || pathname === "/login" || pathname === "/signup" || pathname.startsWith("/dashboard")) {
+                return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+            }
+        }
+
+        else {
+            if (pathname.startsWith("/admin")) {
+                return NextResponse.redirect(new URL("/dashboard", req.url));
+            }
+
+            if (pathname === "/" || pathname === "/login" || pathname === "/signup") {
+                return NextResponse.redirect(new URL("/dashboard", req.url));
+            }
         }
     }
 
     else {
-        if (pathname === "/" || pathname.startsWith("/dashboard")) {
+        if (pathname === "/" || pathname.startsWith("/dashboard") || pathname.startsWith("/admin")) {
             return NextResponse.redirect(new URL("/login", req.url));
         }
     }
@@ -24,5 +38,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/", "/login", "/signup", "/dashboard/:path*"],
+    // Note: Yahan "/admin/:path*" add karna zaroori hai
+    matcher: ["/", "/login", "/signup", "/dashboard/:path*", "/admin/:path*"],
 };

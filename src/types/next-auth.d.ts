@@ -4,6 +4,7 @@ declare module "next-auth" {
     interface Session {
         user: {
             id: string;
+            role: string;
             phone: number | string
             wallet: number;
         } & DefaultSession["user"];

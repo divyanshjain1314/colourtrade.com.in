@@ -39,14 +39,14 @@ export default function SignupPage() {
                 showToast.success("Account created successfully! Redirecting to login...");
                 router.push('/login');
             } else {
-                showToast.error(data.message || "Registration failed. Please try again.");
+                showToast.error(data.error || "Registration failed. Please try again.");
             }
         } catch (error) {
             showToast.error('Connection Error');
         } finally {
             setTimeout(() => {
                 showToast.dismiss();
-            }, 1000);
+            }, 2500);
             setLoading(false);
         }
     };

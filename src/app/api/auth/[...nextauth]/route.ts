@@ -30,8 +30,9 @@ export const authOptions: NextAuthOptions = {
                     id: user._id.toString(),
                     name: user.name,
                     email: user.email,
-                    phone: user.phone, // Phone add kiya
+                    phone: user.phone,
                     wallet: user.wallet,
+                    role: user.role,
                     image: user.image || null,
                 };
             }
@@ -44,6 +45,7 @@ export const authOptions: NextAuthOptions = {
                 token.wallet = user.wallet;
                 token.image = user.image;
                 token.phone = user.phone;
+                token.role = user.role
             }
             if (trigger === "update" && session) {
                 token.name = session.name;
@@ -57,6 +59,7 @@ export const authOptions: NextAuthOptions = {
                 session.user.wallet = token.wallet;
                 session.user.image = token.image;
                 session.user.phone = token.phone;
+                session.user.role = token.role;
             }
             return session;
         }
