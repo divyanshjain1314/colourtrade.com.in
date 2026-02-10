@@ -3,19 +3,13 @@
 import Header from "@/components/common/Header";
 
 export default function DashboardPage() {
-
     return (
         <div className="bg-[#0009] text-white">
             <Header />
             <div className="min-h-screen flex items-center justify-center p-4 md:p-10 relative overflow-hidden">
-                {/* Main Wrapper with Perspective Effect */}
                 <div className="w-full max-w-5xl relative z-10 transform perspective-1000">
-
-                    {/* Main Glass Card */}
                     <div className="w-full rounded-[40px  overflow-hidden">
-
                         <div className="p-8 pt-0">
-                            {/* Timer Section - Matched to Image 2 */}
                             <div className="text-center mb-10">
                                 <div className="inline-block bg-[#1A212C] px-4 py-1 rounded-md border border-white/5 mb-3">
                                     <p className="text-cyan-400 text-[10px] font-black uppercase tracking-[0.2em]">Next Result In</p>
@@ -24,8 +18,6 @@ export default function DashboardPage() {
                                     00:27
                                 </h2>
                             </div>
-
-                            {/* Join Buttons with Intense Glow */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                                 <button className="relative group overflow-hidden rounded-2xl py-6 bg-[#410000] border border-red-500/40 hover:border-red-500 transition-all duration-300 shadow-[0_0_20px_rgba(239,68,68,0.15)] hover:shadow-[0_0_30px_rgba(239,68,68,0.4)]">
                                     <span className="relative z-10 text-[#FF4D4D] font-black text-xl italic tracking-tighter">JOIN RED x2</span>
