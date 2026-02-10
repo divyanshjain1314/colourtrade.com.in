@@ -20,7 +20,7 @@ export default function DashboardPage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedColor, setSelectedColor] = useState<'red' | 'green' | 'violet' | null>(null);
     const [winData, setWinData] = useState<{ amount: number; periodId: string } | null>(null);
-    
+
     // Track previous period to detect changes
     const prevPeriodRef = useRef<string>("");
 
@@ -28,13 +28,13 @@ export default function DashboardPage() {
     useEffect(() => {
         if (session?.user?.id) {
             const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, { cluster: 'ap2' });
-            
+
             const channel = pusher.subscribe(`user-${session.user.id}`);
             channel.bind('game-result', (data: any) => {
-                updateBalance(); 
+                updateBalance();
                 if (data.type === 'win') {
                     setWinData({ amount: data.amount, periodId: data.periodId });
-                    new Audio('/audio/win.mp3').play().catch(()=>{});
+                    new Audio('/audio/win.mp3').play().catch(() => { });
                 }
                 // Loss ka toast hataya taki user disturb na ho, history main dikh jayega
             });
@@ -66,7 +66,7 @@ export default function DashboardPage() {
         // Agar Period ID badal gayi (e.g. 195 -> 196), iska matlab 195 khatam.
         if (periodId !== prevPeriodRef.current) {
             console.log(`Period Changed: ${prevPeriodRef.current} -> ${periodId}. Processing Result...`);
-            
+
             // Call result for the FINISHED period (jo abhi just khatam hua)
             fetch('/api/game/result', {
                 method: 'POST',
@@ -87,12 +87,12 @@ export default function DashboardPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     amount,
-                    type: selectedColor, 
+                    type: selectedColor,
                     select: selectedColor,
                     periodId
                 })
             });
-            
+
             const data = await res.json();
             if (data.success) {
                 showToast.success("Bet Placed Successfully!", 2000);
@@ -109,28 +109,28 @@ export default function DashboardPage() {
     return (
         <div className="bg-[#0009] text-white min-h-screen pb-20">
             <Header />
-            
-            <BettingModal 
-                isOpen={modalOpen} 
-                onClose={() => setModalOpen(false)} 
-                color={selectedColor} 
-                periodId={periodId} 
-                onConfirm={handlePlaceBet} 
+
+            <BettingModal
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                color={selectedColor}
+                periodId={periodId}
+                onConfirm={handlePlaceBet}
             />
 
-            <WinResultModal 
-                isOpen={!!winData} 
-                onClose={() => setWinData(null)} 
-                data={winData} 
+            <WinResultModal
+                isOpen={!!winData}
+                onClose={() => setWinData(null)}
+                data={winData}
             />
 
             <div className="flex flex-col items-center pt-8">
                 {/* Timer Section */}
                 <div className="text-center mb-8 relative">
                     <div className="inline-block bg-[#1A212C] px-4 py-1.5 rounded-full border border-white/10 mb-4 shadow-lg">
-                         <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em]">
-                             Period: <span className="text-cyan-400 font-mono text-xs">{periodId}</span>
-                         </p>
+                        <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                            Period: <span className="text-cyan-400 font-mono text-xs">{periodId}</span>
+                        </p>
                     </div>
 
                     <div className="relative">
@@ -147,18 +147,18 @@ export default function DashboardPage() {
 
                 {/* Game Buttons */}
                 <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 w-full max-w-4xl px-4 transition-all duration-300 ${status === 'locked' ? 'opacity-50 grayscale pointer-events-none' : ''}`}>
-                     <button onClick={() => { setSelectedColor('red'); setModalOpen(true); }} className="bg-[#410000] border-red-500/40 border p-6 rounded-2xl relative overflow-hidden group">
+                    <button onClick={() => { setSelectedColor('red'); setModalOpen(true); }} className="bg-[#410000] border-red-500/40 border p-6 rounded-2xl relative overflow-hidden group">
                         <span className="text-[#FF4D4D] font-black text-xl italic relative z-10">JOIN RED</span>
                         <div className="absolute inset-0 bg-red-600/10 translate-y-full group-hover:translate-y-0 transition-transform"></div>
-                     </button>
-                     <button onClick={() => { setSelectedColor('green'); setModalOpen(true); }} className="bg-[#003D1F] border-green-500/40 border p-6 rounded-2xl relative overflow-hidden group">
+                    </button>
+                    <button onClick={() => { setSelectedColor('green'); setModalOpen(true); }} className="bg-[#003D1F] border-green-500/40 border p-6 rounded-2xl relative overflow-hidden group">
                         <span className="text-[#00E676] font-black text-xl italic relative z-10">JOIN GREEN</span>
                         <div className="absolute inset-0 bg-green-600/10 translate-y-full group-hover:translate-y-0 transition-transform"></div>
-                     </button>
-                     <button onClick={() => { setSelectedColor('violet'); setModalOpen(true); }} className="bg-[#2D0052] border-purple-500/40 border p-6 rounded-2xl relative overflow-hidden group">
+                    </button>
+                    <button onClick={() => { setSelectedColor('violet'); setModalOpen(true); }} className="bg-[#2D0052] border-purple-500/40 border p-6 rounded-2xl relative overflow-hidden group">
                         <span className="text-[#BB66FF] font-black text-xl italic relative z-10">JOIN VIOLET</span>
                         <div className="absolute inset-0 bg-purple-600/10 translate-y-full group-hover:translate-y-0 transition-transform"></div>
-                     </button>
+                    </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-5xl px-4 mb-8">
@@ -171,7 +171,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="w-full px-4">
-                     <MyGameHistory currentPeriodId={periodId} gameStatus={status} />
+                    <MyGameHistory currentPeriodId={periodId} gameStatus={status} />
                 </div>
             </div>
         </div>
