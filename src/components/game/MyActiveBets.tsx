@@ -5,11 +5,10 @@ import { Clock } from "lucide-react";
 
 export default function MyActiveBets({ currentPeriodId }: { currentPeriodId: string }) {
     // Auto refresh every 3 seconds
-    const { data } = useSWR('/api/game/my-bets', fetcher, { refreshInterval: 3000 });
+    const { data } = useSWR('/api/game/my-bets', fetcher, { revalidateOnFocus: false, });
 
     const bets = data?.bets || [];
 
-    // Filter only Current Period Bets
     const activeBets = bets.filter((b: any) => b.periodId === currentPeriodId);
 
     return (
@@ -40,7 +39,7 @@ export default function MyActiveBets({ currentPeriodId }: { currentPeriodId: str
                             <div key={bet._id} className="bg-[#151b26] border border-white/5 p-2 rounded-lg flex items-center justify-between animate-in zoom-in-50 duration-300">
                                 <div className="flex items-center gap-2">
                                     <span className={`w-2 h-2 rounded-full shadow-[0_0_8px_currentColor] ${bet.select === 'red' ? 'bg-red-500 text-red-500' :
-                                            bet.select === 'green' ? 'bg-green-500 text-green-500' : 'bg-purple-500 text-purple-500'
+                                        bet.select === 'green' ? 'bg-green-500 text-green-500' : 'bg-purple-500 text-purple-500'
                                         }`}></span>
                                     <div>
                                         <p className="text-[10px] font-black uppercase text-gray-300">{bet.select}</p>

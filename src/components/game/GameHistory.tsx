@@ -9,7 +9,7 @@ export default function GameHistory({ periodId }: { periodId: string }) {
 
     // Fetch My Bets
     const { data: myBetsData, isLoading } = useSWR('/api/game/my-bets', fetcher, {
-        refreshInterval: 3000 // Har 3 sec mein refresh taaki Result dikhe
+        revalidateOnFocus: false,
     });
 
     // Fetch Game Trend (Results) - Iska API aapne pehle banaya hoga ya mock data use karein
