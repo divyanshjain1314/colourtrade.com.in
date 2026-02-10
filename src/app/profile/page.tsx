@@ -83,7 +83,7 @@ export default function ProfilePage() {
                 <div className="w-full md:max-w-4xl md:mx-auto relative z-10">
                     <div className="flex items-center gap-4 mb-5 md:mb-10">
                         <Link
-                            href="/dashboard"
+                            href={session?.user.role === 'admin' ? '/admin/dashboard' : '/dashboard'}
                             className="p-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-cyan-500/50 transition-all active:scale-95 group flex items-center justify-center"
                         >
                             <ArrowLeft className="w-6 h-6 text-gray-400 group-hover:text-cyan-400 transition-colors" />
