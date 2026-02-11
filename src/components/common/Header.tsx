@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Wallet, PlusCircle, CreditCard, History, LogOut, User, Loader2, LayoutDashboard, BellRing } from 'lucide-react';
 import DepositModal from '../payment/DepositModal';
+import WithdrawModal from '../payment/WithdrawModal'; // ✅ Import This
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import NotificationDropdown from './NotificationDropdown';
@@ -12,7 +13,11 @@ import { fetcher } from '@/lib/fetcher';
 
 const Header = () => {
     const { data: session } = useSession();
+
+    // ✅ State for Withdraw Modal
     const [isDepositOpen, setIsDepositOpen] = useState<boolean>(false);
+    const [isWithdrawOpen, setIsWithdrawOpen] = useState<boolean>(false); // New State
+
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -31,6 +36,7 @@ const Header = () => {
         }
     );
 
+    // ... (Pusher Effect Same rahega) ...
     useEffect(() => {
         if (session?.user?.id && !isAdmin) {
             const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, { cluster: 'ap2' });
@@ -79,7 +85,7 @@ const Header = () => {
     return (
         <>
             {isLoggingOut && (
-                <div className="fixed inset-0 z-999 bg-[#050A10]/80 backdrop-blur-md flex flex-col items-center justify-center">
+                <div className="fixed inset-0 z-[9999] bg-[#050A10]/80 backdrop-blur-md flex flex-col items-center justify-center">
                     <Loader2 className="w-12 h-12 text-cyan-500 animate-spin mb-4" />
                     <p className="text-white font-black uppercase tracking-widest italic text-xl">Logging Out...</p>
                 </div>
@@ -87,23 +93,26 @@ const Header = () => {
 
             <div className="relative w-full px-4 py-4 md:py-14 z-50">
                 <div className="flex items-center justify-between md:justify-center w-full relative">
+                    {/* Logo Section */}
                     <div className="shrink-0 z-10 md:absolute md:left-1/2 md:-translate-x-1/2">
-                        <h1 className="text-xl md:text-5xl font-[1000] italic tracking-tighter leading-none select-none uppercase flex flex-col md:block">
-                            <span className="text-[#FF3B3B] drop-shadow-[0_0_12px_rgba(255,59,59,0.6)]">PLAY</span>
-                            <span className="hidden md:inline text-white mx-3">&</span>
-                            <span className="text-[#00E676] drop-shadow-[0_0_12px_rgba(0,230,118,0.6)]">WIN</span>
-                        </h1>
+                        <Link href="/">
+                            <h1 className="text-xl md:text-5xl font-[1000] italic tracking-tighter leading-none select-none uppercase flex flex-col md:block cursor-pointer">
+                                <span className="text-[#FF3B3B] drop-shadow-[0_0_12px_rgba(255,59,59,0.6)]">PLAY</span>
+                                <span className="hidden md:inline text-white mx-3">&</span>
+                                <span className="text-[#00E676] drop-shadow-[0_0_12px_rgba(0,230,118,0.6)]">WIN</span>
+                            </h1>
+                        </Link>
                     </div>
+
+                    {/* Right Menu Section */}
                     <div className="flex items-center gap-2 md:gap-4 z-20 md:absolute md:right-8">
                         <div className="relative shrink-0">
                             <NotificationDropdown />
                         </div>
                         <div className="relative group" ref={dropdownRef}>
+                            {/* ... (Admin/User Icon Logic Same) ... */}
                             {isAdmin ? (
-                                <div
-                                    onClick={() => setIsOpen(!isOpen)}
-                                    className="w-10 h-10 md:w-14 md:h-14 rounded-full border-2 border-cyan-500/50 p-0.5 cursor-pointer hover:border-cyan-500 transition-all active:scale-95 overflow-hidden shadow-[0_0_15px_rgba(6,182,212,0.2)]"
-                                >
+                                <div onClick={() => setIsOpen(!isOpen)} className="w-10 h-10 md:w-14 md:h-14 rounded-full border-2 border-cyan-500/50 p-0.5 cursor-pointer hover:border-cyan-500 transition-all active:scale-95 overflow-hidden shadow-[0_0_15px_rgba(6,182,212,0.2)]">
                                     {session?.user?.image ? (
                                         <img src={session.user.image} alt="Admin" className="w-full h-full rounded-full object-cover" />
                                     ) : (
@@ -113,10 +122,7 @@ const Header = () => {
                                     )}
                                 </div>
                             ) : (
-                                <div
-                                    onClick={() => setIsOpen(!isOpen)}
-                                    className={`bg-[#111821] px-3 py-1.5 md:px-6 md:py-2 rounded-lg flex items-center gap-2 md:gap-4 border transition-all cursor-pointer active:scale-95 ${isOpen ? 'border-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.3)]' : 'border-white/5'}`}
-                                >
+                                <div onClick={() => setIsOpen(!isOpen)} className={`bg-[#111821] px-3 py-1.5 md:px-6 md:py-2 rounded-lg flex items-center gap-2 md:gap-4 border transition-all cursor-pointer active:scale-95 ${isOpen ? 'border-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.3)]' : 'border-white/5'}`}>
                                     <Wallet className="w-4 h-4 md:w-6 md:h-6 text-white stroke-1" />
                                     <div className="flex items-center gap-1 md:gap-2">
                                         <span className="text-white font-black text-sm md:text-xl">₹</span>
@@ -126,28 +132,21 @@ const Header = () => {
                                     </div>
                                 </div>
                             )}
+
+                            {/* Dropdown Menu */}
                             <div className={`absolute top-full right-0 mt-3 w-60 bg-[#0D1520]/95 border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden transition-all duration-300 backdrop-blur-2xl z-[110] ${isOpen ? 'visible opacity-100 translate-y-0' : 'invisible opacity-0 translate-y-4'}`}>
                                 <div className="p-2.5 space-y-1">
                                     {isAdmin ? (
                                         <>
+                                            {/* ... Admin Links ... */}
                                             <div className="px-3 py-2 mb-1 border-b border-white/5">
                                                 <p className="text-[10px] text-cyan-500 uppercase font-black tracking-widest">Admin Control</p>
                                             </div>
-                                            <Link
-                                                href="/profile"
-                                                onClick={() => setIsOpen(false)}
-                                                className="w-full flex items-center gap-3 px-3 py-3 text-sm font-medium text-gray-300 hover:bg-white/5 rounded-xl transition-colors"
-                                            >
-                                                <User className="w-5 h-5" />
-                                                My Profile
+                                            <Link href="/profile" onClick={() => setIsOpen(false)} className="w-full flex items-center gap-3 px-3 py-3 text-sm font-medium text-gray-300 hover:bg-white/5 rounded-xl transition-colors">
+                                                <User className="w-5 h-5" /> My Profile
                                             </Link>
                                             <Link href="/admin/requests" onClick={() => setIsOpen(false)} className="w-full flex items-center gap-3 px-3 py-3 text-sm font-bold text-white hover:bg-cyan-500/10 rounded-xl transition-colors">
-                                                <LayoutDashboard className="w-5 h-5 text-cyan-500" />
-                                                Manage Requests
-                                            </Link>
-                                            <Link href="/admin/notifications" onClick={() => setIsOpen(false)} className="w-full flex items-center gap-3 px-3 py-3 text-sm font-medium text-gray-300 hover:bg-white/5 rounded-xl transition-colors">
-                                                <BellRing className="w-5 h-5" />
-                                                Activity Logs
+                                                <LayoutDashboard className="w-5 h-5 text-cyan-500" /> Manage Requests
                                             </Link>
                                         </>
                                     ) : (
@@ -155,48 +154,55 @@ const Header = () => {
                                             <div className="px-3 py-2 mb-1 border-b border-white/5">
                                                 <p className="text-[10px] text-gray-500 uppercase font-black tracking-widest">Wallet Actions</p>
                                             </div>
-                                            <Link
-                                                href="/profile"
-                                                onClick={() => setIsOpen(false)}
+                                            <Link href="/profile" onClick={() => setIsOpen(false)} className="w-full flex items-center gap-3 px-3 py-3 text-sm font-medium text-gray-300 hover:bg-white/5 rounded-xl transition-colors">
+                                                <User className="w-5 h-5" /> My Profile
+                                            </Link>
+
+                                            {/* ADD MONEY BUTTON */}
+                                            <button onClick={() => { setIsDepositOpen(true); setIsOpen(false); }} className="w-full flex items-center gap-3 px-3 py-3 text-sm font-bold text-cyan-400 hover:bg-cyan-500/10 rounded-xl transition-colors">
+                                                <PlusCircle className="w-5 h-5" /> Add Money
+                                            </button>
+
+                                            {/* ✅ WITHDRAW BUTTON CLICK HANDLER */}
+                                            <button
+                                                onClick={() => { setIsWithdrawOpen(true); setIsOpen(false); }}
                                                 className="w-full flex items-center gap-3 px-3 py-3 text-sm font-medium text-gray-300 hover:bg-white/5 rounded-xl transition-colors"
                                             >
-                                                <User className="w-5 h-5" />
-                                                My Profile
-                                            </Link>
-                                            <button onClick={() => { setIsDepositOpen(true); setIsOpen(false); }} className="w-full flex items-center gap-3 px-3 py-3 text-sm font-bold text-cyan-400 hover:bg-cyan-500/10 rounded-xl transition-colors">
-                                                <PlusCircle className="w-5 h-5" />
-                                                Add Money
+                                                <CreditCard className="w-5 h-5" /> Withdraw
                                             </button>
-                                            <button className="w-full flex items-center gap-3 px-3 py-3 text-sm font-medium text-gray-300 hover:bg-white/5 rounded-xl transition-colors">
-                                                <CreditCard className="w-5 h-5" />
-                                                Withdraw
-                                            </button>
+
                                             <button className="w-full flex items-center gap-3 px-3 py-3 text-sm font-medium text-gray-400 hover:bg-white/5 rounded-xl transition-colors">
-                                                <History className="w-5 h-5" />
-                                                Transactions
+                                                <History className="w-5 h-5" /> Transactions
                                             </button>
                                         </>
                                     )}
                                     <div className="pt-1 mt-1 border-t border-white/5">
                                         <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-3 text-sm font-bold text-red-500 hover:bg-red-500/10 rounded-xl transition-colors">
-                                            <LogOut className="w-5 h-5" />
-                                            Logout
+                                            <LogOut className="w-5 h-5" /> Logout
                                         </button>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
 
+            {/* MODALS */}
             {!isAdmin && (
-                <DepositModal
-                    isOpen={isDepositOpen}
-                    onClose={() => setIsDepositOpen(false)}
-                    onSuccess={(amount) => console.log(amount)}
-                />
+                <>
+                    <DepositModal
+                        isOpen={isDepositOpen}
+                        onClose={() => setIsDepositOpen(false)}
+                        onSuccess={(amount) => console.log(amount)}
+                    />
+
+                    {/* ✅ Withdraw Modal Connected */}
+                    <WithdrawModal
+                        isOpen={isWithdrawOpen}
+                        onClose={() => setIsWithdrawOpen(false)}
+                    />
+                </>
             )}
         </>
     );
